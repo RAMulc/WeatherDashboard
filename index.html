@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./Assets/css/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 jumbotron">
+                <h1 class="text-center"><strong> Weather Dashboard</strong></h1>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-4 search-area">
+                <div class="row">
+                    <div class="col-sm-12 search-for">
+                        <form class="search-form">
+                            <label for="search-text">Search for a City:</label>
+                            <input type="text" placeholder="Search.." id="search-text" name="search">
+                            <button type="submit" id="search-button"><i class="fa fa-search"></i></button>
+                        </form>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-sm-12" id="search-history">
+                        <button class="history-item full-width-button" id="Kansas">Kansas</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <button class="clear-history full-width-button">Clear History</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <div class="container with-frame">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h4 class="float-left" id="today-city-date"> </h4>
+                            <img class="weather-icon" id="today-icon"></img>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <p id="today-temp"></p>
+                            <p id="today-humid"></p>
+                            <p id="today-wind"></p>
+                            <p class="float-left" id="today-uvIndex">
+                            <div class="float-left" id="uvValue">
+                            </div>
+                            </p>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div>
+                            <div class="col-sm-12">
+                                <h4>
+                                    5-Day Forcast
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" id="forecast-container">
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="./Assets/script/script.js"></script>
+
+</body>

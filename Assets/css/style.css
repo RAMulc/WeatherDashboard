@@ -1,0 +1,133 @@
+* {
+    box-sizing: border-box;
+  }
+  
+  /* Style the search field */
+  .search-form input[type=text] {
+    padding: 10px;
+    font-size: 17px;
+    border: 1px solid grey;
+    border-radius: 5px;
+    float: left;
+    width: 80%;
+    background: #f1f1f1;
+  }
+  
+  /* Style the submit button */
+  .search-form button {
+    float: left;
+    width: 20%;
+    padding: 10px;
+    background: rgb(36, 92, 165);
+    color: white;
+    font-size: 17px;
+    border: 1px solid grey;
+    border-radius: 5px;
+    border-left: none;
+    cursor: pointer;
+  }
+  
+  .search-form button:hover {
+    background: darkblue;
+  }
+  
+  .search-form::after {
+    content: "";
+    clear: both;
+    display: table;
+  }
+
+  .with-frame {
+    border: 1px solid grey;
+    border-radius: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+  }
+
+  .search-area {
+    border: 1px solid white;
+    border-radius: 10px;
+    background-color: lightgray;
+  }
+
+  .jumbotron {
+      background-color: grey;
+      color: white;
+  }
+
+  .full-width-button {
+    display: block;
+    width: 100%;
+    border: 1px solid grey;
+    border-radius: 5px;
+    background-color: white;
+    padding: 10px 15px;
+    text-align: left;
+    color: gray;
+    margin-bottom: 5px;
+  }
+
+  .full-width-button:hover {
+    background: lightblue;
+    color: green;
+    font-weight: bold;
+  }
+
+  .clear-history {
+    color: red;
+    text-align: center;
+  }
+
+  .forecast {
+    background-color: rgb(36, 92, 165);
+    color: white;
+    padding: 5px;
+    min-width: fit-content;
+    max-width: 25%;
+  }
+
+  .forecast p {
+    font-size: 15px;
+  }
+
+  .weather-icon {
+    width: 50px;
+    height: auto;
+  }
+
+  #uvValue {
+    width: fit-content;
+    padding: 5px;
+    border-radius: 5px;
+  }
+
+  #today-uvIndex {
+    padding-top: 5px;  
+    padding-right: 5px;
+  }
+
+  .lowUV {
+    background-color: green;
+    color: white;
+  }
+
+  .moderateUV {
+    background-color:yellow;
+    color: black;
+  }
+
+  .highUV {
+    background-color: orange;
+    color: black;
+  }
+
+  .veryHighUV {
+    background-color: red;
+    color: black;
+  }
+
+  .extremeUV {
+    background-color: violet;
+    color: black;
+  }
