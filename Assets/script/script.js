@@ -3,6 +3,7 @@ $(document).ready(function () {
     var currentLocation = "";
     var key = "70adb56aad82f6d80d7d219777ea54b2";
     var cityHistory = [];
+    var currentDate;
 
     function runQuery(queryURL, stage) {
         //console.log("queryURL", queryURL);
@@ -25,7 +26,7 @@ $(document).ready(function () {
                         setUVToday(response.value);
                         break;
                     case "forecast":
-                        console.log("forecast response", response);
+                        //console.log("forecast response", response);
                         setForecast(response);
                         break;
                     default:
@@ -48,7 +49,7 @@ $(document).ready(function () {
     }
 
     function setToday(curCityWeather) {
-        var today = thisDay();
+        var today = thisDay(curCityWeather.dt);
         $("#today-city-date").text(curCityWeather.name + " (" + today + ")");
         setIcon("#today-icon", curCityWeather.weather[0].icon);
         $("#today-temp").text("Temperature: " + Math.round(curCityWeather.main.temp) + " °C");
@@ -76,16 +77,20 @@ $(document).ready(function () {
     function setForecast(forCityWeather) {
         $("#forecast-container").empty();
         var count = 0;
-        var forecastDate = new Date((forCityWeather.list[0].dt) * 1000);
-        forecastDate.setHours(forecastDate.getHours() + 24);
-
+        var forecastDate = new Date();
+        forecastDate.setDate(currentDate.getDate()+1);
+        // Look for the first 'day' result in the query response for each forecast date.
+        // Depending on the time of day that the search is undertaken, there may be insufficient 
+        // data returned from the query to give a 5-day forcast.
+        // We could just read the first entry from each forecast date, but that could be night 
+        // values at night, and does not seem logical.
         for (var i = 0; i < forCityWeather.list.length; i++) {
             var date = new Date((forCityWeather.list[i].dt) * 1000);
 
             if (forecastDate.getDate() === date.getDate() && forCityWeather.list[i].sys.pod === "d") {
                 addForecastElement(forCityWeather.list[i]);
                 count++;
-                forecastDate.setHours(forecastDate.getHours() + 24);
+                forecastDate.setHours(forecastDate.getDate() + 1);
 
                 if (count > 5) {
                     return;
@@ -152,8 +157,9 @@ $(document).ready(function () {
         $(eleID).attr("src", "http://openweathermap.org/img/wn/" + iconCode + "@2x.png");
     }
 
-    function thisDay() {
-        var theDate = new Date();
+    function thisDay(responseDate) {
+        var theDate = new Date(responseDate * 1000);
+        currentDate = theDate;
         var dd = String(theDate.getDate()).padStart(2, '0');
         var mm = String(theDate.getMonth() + 1).padStart(2, '0');
         var yyyy = theDate.getFullYear();
