@@ -25,7 +25,7 @@ $(document).ready(function () {
                         setUVToday(response.value);
                         break;
                     case "forecast":
-                        //console.log("forecast response", response);
+                        console.log("forecast response", response);
                         setForecast(response);
                         break;
                     default:
@@ -76,15 +76,16 @@ $(document).ready(function () {
     function setForecast(forCityWeather) {
         $("#forecast-container").empty();
         var count = 0;
-        var forecastDate = new Date(forCityWeather.list[0].dt * 1000).getDate() + 1;
+        var forecastDate = new Date((forCityWeather.list[0].dt) * 1000);
+        forecastDate.setHours(forecastDate.getHours() + 24);
 
         for (var i = 0; i < forCityWeather.list.length; i++) {
-            var date = new Date(forCityWeather.list[i].dt * 1000).getDate();
+            var date = new Date((forCityWeather.list[i].dt) * 1000);
 
-            if (forecastDate <= date) {
-                addForecastElement(forCityWeather.list[i], forCityWeather.city.timezone);
+            if (forecastDate.getDate() === date.getDate() && forCityWeather.list[i].sys.pod === "d") {
+                addForecastElement(forCityWeather.list[i]);
                 count++;
-                forecastDate += 1;
+                forecastDate.setHours(forecastDate.getHours() + 24);
 
                 if (count > 5) {
                     return;
@@ -97,7 +98,7 @@ $(document).ready(function () {
         var div = $("<div>");
         div.addClass("col-sm with-frame forecast");
         var h = $("<h4>");
-        var hDate = new Date((listItem.dt + 0) * 1000);
+        var hDate = new Date((listItem.dt) * 1000);
         h.text(hDate.toLocaleDateString());
         div.append(h);
 
@@ -189,7 +190,7 @@ $(document).ready(function () {
             currentLocation = lastCity;
         }
         else {
-            currentLocation = "Perth";
+            currentLocation = "Perth,AUS";
         }
         runQueries();
     }
@@ -210,15 +211,30 @@ $(document).ready(function () {
             .split(' ').map((s) => s.charAt(0)
                 .toUpperCase() + s.substring(1))
             .join(' ');
+            console.log(cityName);
         return cityName;
+    }
+
+    function formatSearch(txt) {
+        var arr = txt.split(",");
+        arr = arr.map(x => x.trim());
+        for (var i = 0; i < arr.length; i++) {
+            if (i === 0) {
+                arr[i] = capitaliseCityName(arr[i]);
+            }
+            else {
+                arr[i] = arr[i].toUpperCase();
+            }
+        }
+        return arr.join();
     }
 
     $("#search-button").on("click", function (event) {
         event.preventDefault();
         if ($("#search-text").val()) {
-            currentLocation = $("#search-text").val();
+            currentLocation = formatSearch($("#search-text").val());
             runQueries();
-            currentLocation = capitaliseCityName(currentLocation);
+            //currentLocation = capitaliseCityName(currentLocation);
             $("#search-text").val("");
         }
     });
