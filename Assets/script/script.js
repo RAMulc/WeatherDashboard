@@ -78,7 +78,7 @@ $(document).ready(function () {
         $("#forecast-container").empty();
         var count = 0;
         var forecastDate = new Date();
-        forecastDate.setDate(currentDate.getDate()+1);
+        forecastDate.setDate(currentDate.getDate() + 1);
         // Look for the first 'day' result in the query response for each forecast date.
         // Depending on the time of day that the search is undertaken, there may be insufficient 
         // data returned from the query to give a 5-day forcast.
@@ -86,15 +86,19 @@ $(document).ready(function () {
         // values at night, and does not seem logical.
         for (var i = 0; i < forCityWeather.list.length; i++) {
             var date = new Date((forCityWeather.list[i].dt) * 1000);
-
-            if (forecastDate.getDate() === date.getDate() && forCityWeather.list[i].sys.pod === "d") {
-                addForecastElement(forCityWeather.list[i]);
-                count++;
-                forecastDate.setHours(forecastDate.getDate() + 1);
-
-                if (count > 5) {
-                    return;
+            if (forecastDate.getDate() === date.getDate() &&
+                forCityWeather.list[i].sys.pod === "d") {
+                for (var j = i; j < forCityWeather.list.length; j += 8) {
+                    addForecastElement(forCityWeather.list[j]);
+                    //console.log(forCityWeather.list[j].sys.pod)
+                    count++;
                 }
+                // A work-around to get 5-days of forecast - could be a night...
+                if (count < 5 ){
+                    addForecastElement(forCityWeather.list[forCityWeather.list.length - 1]);
+                    //console.log(forCityWeather.list[forCityWeather.list.length - 1].sys.pod)
+                }
+                return;
             }
         }
     }
@@ -217,7 +221,7 @@ $(document).ready(function () {
             .split(' ').map((s) => s.charAt(0)
                 .toUpperCase() + s.substring(1))
             .join(' ');
-            console.log(cityName);
+        console.log(cityName);
         return cityName;
     }
 
