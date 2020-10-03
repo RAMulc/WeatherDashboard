@@ -42,7 +42,7 @@ Successfully searching for a city will generate the current days' weather, with:
 
 A forecast will be also be generated for the following 5-days. This forecast targets daytime values. NOTE: The last day may not be daytime values as insufficient data may be supplied from the API query (night time values may substitute, and is distinguished by the night icon).
 
-![Screenshot 2020-10-03](E:\UWA\Homework\UWA_HW06_WeatherDashboard\Assets\images\Screenshot 2020-10-03.png)
+![Screenshot 2020-10-03](https://github.com/RAMulc/WeatherDashboard/blob/master/Assets/images/Screenshot%202020-10-03.png)
 
 
 
