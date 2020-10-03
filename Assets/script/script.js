@@ -14,7 +14,7 @@ $(document).ready(function () {
             .then(function (response) {
                 switch (stage) {
                     case "today":
-                        //console.log("today response", response);
+                        console.log("today response", response);
                         setToday(response);
                         if (cityHistory.indexOf(currentLocation) === -1) {
                             updateCityHistory();
@@ -44,7 +44,7 @@ $(document).ready(function () {
     }
 
     function makeCurrentUVQueryURL(latitude, longitude) {
-        return curUVQueryURL = "http://api.openweathermap.org/data/2.5/uvi?lat=" +
+        return curUVQueryURL = "https://api.openweathermap.org/data/2.5/uvi?lat=" +
             latitude + "&lon=" + longitude + "&appid=" + key;
     }
 
