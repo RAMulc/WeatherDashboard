@@ -1,12 +1,12 @@
 $(document).ready(function () {
-
+    // declare variables
     var currentLocation = "";
     var key = "70adb56aad82f6d80d7d219777ea54b2";
     var cityHistory = [];
     var currentDate;
 
+    // Function to run various queries
     function runQuery(queryURL, stage) {
-        //console.log("queryURL", queryURL);
         var a = $.ajax({
             url: queryURL,
             method: "GET"
@@ -14,19 +14,15 @@ $(document).ready(function () {
             .then(function (response) {
                 switch (stage) {
                     case "today":
-                        console.log("today response", response);
                         setToday(response);
                         if (cityHistory.indexOf(currentLocation) === -1) {
                             updateCityHistory();
-
                         }
                         break;
                     case "uvToday":
-                        //console.log("uvtoday response", response);
                         setUVToday(response.value);
                         break;
                     case "forecast":
-                        //console.log("forecast response", response);
                         setForecast(response);
                         break;
                     default:
@@ -35,7 +31,7 @@ $(document).ready(function () {
             });
     }
 
-
+    // Function generate query for current day's weather
     function makeCurrentQueryURL() {
         var location = currentLocation;
         var curQueryURL = "https://api.openweathermap.org/data/2.5/weather?q=" +
@@ -43,14 +39,18 @@ $(document).ready(function () {
         return curQueryURL;
     }
 
+    // Function to generate query to obtain UV index for current day
+    // latitude and longitude obtained from current day query response 
     function makeCurrentUVQueryURL(latitude, longitude) {
         return curUVQueryURL = "https://api.openweathermap.org/data/2.5/uvi?lat=" +
             latitude + "&lon=" + longitude + "&appid=" + key;
     }
 
+    // Function to render current day weather results for chosen city
     function setToday(curCityWeather) {
         var today = thisDay(curCityWeather.dt);
-        $("#today-city-date").text(curCityWeather.name + " (" + today + ")");
+        currentLocation = curCityWeather.name + "," + curCityWeather.sys.country;
+        $("#today-city-date").text(currentLocation + " (" + today + ")");
         setIcon("#today-icon", curCityWeather.weather[0].icon);
         $("#today-temp").text("Temperature: " + Math.round(curCityWeather.main.temp) + " °C");
         $("#today-humid").text("Humidity: " + Math.round(curCityWeather.main.humidity) + " %");
@@ -66,6 +66,7 @@ $(document).ready(function () {
         }
     }
 
+    // Function to render uv index with colour coding from style.css classes
     function setUVToday(uv) {
         $("#today-uvIndex").text("UV Index: ");
         $("#uvValue").text(uv);
@@ -74,6 +75,26 @@ $(document).ready(function () {
         $("#uvValue").addClass(uvRange(uv));
     }
 
+    // Function to determine class names by uv-index value
+    function uvRange(uvValue) {
+        if (uvValue >= 0 && uvValue < 3) {
+            return "lowUV";     //low risk
+        }
+        if (uvValue >= 3 && uvValue < 6) {
+            return "moderateUV";    //Moderate risk
+        }
+        if (uvValue >= 6 && uvValue < 8) {
+            return "highUV";     //High risk
+        }
+        if (uvValue >= 8 && uvValue < 10) {
+            return "veryHighUV";       //Very high risk
+        }
+        else {
+            return "extremeUV";    //Extreme risk
+        }
+    }
+
+    // Function to find forcast dat for following five days - targets results for day, rather than night
     function setForecast(forCityWeather) {
         $("#forecast-container").empty();
         var count = 0;
@@ -90,19 +111,18 @@ $(document).ready(function () {
                 forCityWeather.list[i].sys.pod === "d") {
                 for (var j = i; j < forCityWeather.list.length; j += 8) {
                     addForecastElement(forCityWeather.list[j]);
-                    //console.log(forCityWeather.list[j].sys.pod)
                     count++;
                 }
                 // A work-around to get 5-days of forecast - could be a night...
-                if (count < 5 ){
+                if (count < 5) {
                     addForecastElement(forCityWeather.list[forCityWeather.list.length - 1]);
-                    //console.log(forCityWeather.list[forCityWeather.list.length - 1].sys.pod)
                 }
                 return;
             }
         }
     }
 
+    // Function to render forecast results to the display
     function addForecastElement(listItem) {
         var div = $("<div>");
         div.addClass("col-sm with-frame forecast");
@@ -127,40 +147,20 @@ $(document).ready(function () {
         $("#forecast-container").append(div);
     }
 
-    function uvRange(uvValue) {
-        if (uvValue >= 0 && uvValue < 3) {
-            return "lowUV";     //low risk
-        }
-        if (uvValue >= 3 && uvValue < 6) {
-            return "moderateUV";    //Moderate risk
-        }
-        if (uvValue >= 6 && uvValue < 8) {
-            return "highUV";     //High risk
-        }
-        if (uvValue >= 8 && uvValue < 10) {
-            return "veryHighUV";       //Very high risk
-        }
-        else {
-            return "extremeUV";    //Extreme risk
-        }
-    }
-
+    // Function to generate query for 5-day forecast
     function makeForecastQueryURL() {
-
         var location = currentLocation;
-
         var forQueryURL = "https://api.openweathermap.org/data/2.5/forecast?q=" +
             location + "&units=metric&APPID=" + key;
-
-        //console.log("forQueryURL: ", forQueryURL);
         return forQueryURL;
     }
 
+    // Function to set the path for weather icon
     function setIcon(eleID, iconCode) {
-        //console.log(iconCode);
         $(eleID).attr("src", "http://openweathermap.org/img/wn/" + iconCode + "@2x.png");
     }
 
+    // Function to return 'nicely' formatted date/month/year
     function thisDay(responseDate) {
         var theDate = new Date(responseDate * 1000);
         currentDate = theDate;
@@ -171,11 +171,13 @@ $(document).ready(function () {
         return dd + '/' + mm + '/' + yyyy;
     }
 
+    // Function to run queries for current day and forecast
     function runQueries() {
         runQuery(makeCurrentQueryURL(), "today");
         runQuery(makeForecastQueryURL(), "forecast")
     }
 
+    // Function to maintain search city history, and add into local storage
     function updateCityHistory() {
         cityHistory.push(currentLocation);
         cityHistory.sort();
@@ -184,6 +186,7 @@ $(document).ready(function () {
         addCompleteCityHistory();
     }
 
+    // Function to rerieve any stored search history from local storage
     function getStoredCityHistory() {
         var hist = JSON.parse(localStorage.getItem("cityHistory"));
         if (hist !== null) {
@@ -194,17 +197,21 @@ $(document).ready(function () {
         }
     }
 
+    // Function to return the last 'searched for' city for diplay when the browser opens
     function getLastCity() {
         var lastCity = localStorage.getItem("lastCity");
         if (lastCity !== null) {
             currentLocation = lastCity;
         }
         else {
-            currentLocation = "Perth,AUS";
+            // Set Perth,AU as the default location if nothing is stored. 
+            // It is the best place on the planet after all!
+            currentLocation = "Perth,AU";
         }
         runQueries();
     }
 
+    // Render search history to the display
     function addCompleteCityHistory() {
         $("#search-history").empty();
         for (var i = 0; i < cityHistory.length; i++) {
@@ -216,6 +223,7 @@ $(document).ready(function () {
         }
     }
 
+    // A Format the entered city name - just for looks!
     function capitaliseCityName(cityName) {
         cityName = cityName.toLowerCase()
             .split(' ').map((s) => s.charAt(0)
@@ -225,6 +233,8 @@ $(document).ready(function () {
         return cityName;
     }
 
+    // Format the entered search string to 'City,Country' - trim spaces
+    // The city may be entered without Country
     function formatSearch(txt) {
         var arr = txt.split(",");
         arr = arr.map(x => x.trim());
@@ -239,16 +249,18 @@ $(document).ready(function () {
         return arr.join();
     }
 
+    // on-click event for the search button
     $("#search-button").on("click", function (event) {
         event.preventDefault();
         if ($("#search-text").val()) {
             currentLocation = formatSearch($("#search-text").val());
             runQueries();
-            //currentLocation = capitaliseCityName(currentLocation);
             $("#search-text").val("");
         }
     });
 
+    // on-click event watching the 'search-history' container 
+    // for button clicks on the dynamically generated buttons
     $("#search-history").on("click", "button", function (event) {
         event.preventDefault();
         currentLocation = $(this).attr("id");
@@ -256,6 +268,8 @@ $(document).ready(function () {
         localStorage.setItem("lastCity", currentLocation);
     });
 
+    // on-click event to clear the search history.
+    // The current diplayed city will not be cleared
     $(".clear-history").on("click", function (event) {
         event.preventDefault();
         cityHistory = [currentLocation];
@@ -263,6 +277,7 @@ $(document).ready(function () {
         addCompleteCityHistory();
     });
 
+    // Setup the display
     function init() {
         getStoredCityHistory();
         getLastCity();
